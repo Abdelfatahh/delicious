@@ -9,7 +9,7 @@ const storeSchema = new mongoose.Schema({
         required: 'please enter a store name'
     },
     slug: String,
-    descrption:{
+    description:{
         type:String,
         trim: true 
     },
