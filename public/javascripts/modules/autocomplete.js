@@ -9,7 +9,7 @@ function autocomplete(input, latInput, lngInput){
     });
 
     // if someone hits enter don't submit the form 
-    input.on('keydown',(e) => {
+    input.on('keydown', (e) => {
         if(e.keyCode === 13 ) e.preventDefault();
     })
 

@@ -1,5 +1,18 @@
 const mongoose = require('mongoose');
 const Store = mongoose.model('Store');
+const multer = require('multer')
+
+const multerOptions = {
+    storage: multer.memoryStorage(),
+    fileFilter(req, res, next) {
+        const isPhoto = file.mimeType.startsWith('image/');
+        if (isPhoto) {
+            next(null, true)
+        } else {
+            next({ message: 'That file type isn\'t allowed! ' }, false)
+        }
+    }
+};
 
 
 exports.homepage = (req, res) => {
@@ -32,6 +45,9 @@ exports.editStore = async (req, res) => {
 }
 
 exports.updateStore = async (req, res) => {
+    // set the location data to be a point 
+    req.body.location.type = 'Point';
+    
     // 1. find and update the store
     const store = await Store.findOneAndUpdate({ _id: req.params.id }, req.body, {
         new:true, // return the new store instead of the old one 
