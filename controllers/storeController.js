@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Store = mongoose.model('Store');
 const multer = require('multer')
+const jimp = require('jimp'); // image resizer
+const uuid = require('uuid') // unique names for photos
 
 const multerOptions = {
     storage: multer.memoryStorage(),
@@ -23,7 +25,23 @@ exports.addStore = (req,res) => {
     res.render('editStore', {title: 'Add Store'})
 };
 
-exports.upload = multer(multerOptions).single('photo')
+exports.upload = multer(multerOptions).single('photo');
+
+exports.resize = async (req, res, next) => {
+    //check if ther is no new file to resize  
+    if( !req.file ){
+        next(); // skip to next middleware
+        return;
+    } 
+    const extension = req.file.mimetype.split('/')[1];
+    req.body.photo = `${uuid.v4()}.${extension}`;
+    // now resizing 
+    const photo = await jimp.read(req.file.buffer); 
+    await photo.resize(800, jimp.AUTO);
+    await photo.write(`./public/uploads/${req.body.photo}`);
+    // once we have written the photo to our file system, keep goin! 
+    next();
+}
 
 exports.createStore = async (req, res) => {
     const store = await (new Store(req.body).save());
