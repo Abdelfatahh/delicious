@@ -6,8 +6,8 @@ const uuid = require('uuid') // unique names for photos
 
 const multerOptions = {
     storage: multer.memoryStorage(),
-    fileFilter(req, res, next) {
-        const isPhoto = file.mimeType.startsWith('image/');
+    fileFilter(req, file, next) {
+        const isPhoto = file.mimetype.startsWith('image/');
         if (isPhoto) {
             next(null, true)
         } else {""
@@ -76,4 +76,12 @@ exports.updateStore = async (req, res) => {
     req.flash('success', `Successfully updated <strong>${store.name}</strong>. <a href="/stores/${store.slug}">View Store</a>`)
     res.redirect(`/stores/${store._id}/edit`)
     // 2. 
+}
+
+exports.getStoreBySlug = async (req, res) => {
+    // 1. query the database for that specific store 
+    const store = await Store.findOne( { slug: req.params.slug });
+    if(!store)  return next();
+    res.render( 'store', { store, title: store.name });
+    
 }
