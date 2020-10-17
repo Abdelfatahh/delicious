@@ -16,11 +16,15 @@ const userSchema = new Schema({
         required: 'Please enter an email address!'
 
     },
-    name:{
+    name: {
         type: String,
         required: 'Please enter a name',
         trim: true
     }
-})
+
+});
+
+userSchema.plugin(passportLocalMongoose, {usernameField: 'email'});
+userSchema.plugin(mongodbErrorHandler);
 
 module.exports = mongoose.model('User', userSchema)
