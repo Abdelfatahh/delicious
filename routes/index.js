@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const storeController = require('../controllers/storeController')
 const userController = require('../controllers/userController')
+const authController = require('../controllers/authController')
 
 const { catchErrors } = require('../handlers/errorHandlers')
 
@@ -34,7 +35,8 @@ router.get('/register', userController.registerForm)
 // 3. we need to log them in
 router.post('/register', 
             userController.validateRegister,
-            userController.register)
+            userController.register,
+            authController.login)
 
 
 module.exports = router;
